@@ -29,7 +29,7 @@ public class Application {
     }
 
     private void testVisibility(ApplicationContext context, String beanName) {
-        System.out.println(context.getId() + " can see parentHello: "
+        System.out.println(context.getId() + " can see " + beanName + ": "
                 + context.containsBean(beanName));
     }
 
