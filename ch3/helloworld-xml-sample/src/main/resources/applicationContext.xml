@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:config>
+        <aop:aspect ref="helloAspect" order="1">
+            <aop:before pointcut="target(learning.spring.helloworld.Hello) and args(words)"
+                        method="addWords"/>
+        </aop:aspect>
+
+        <aop:aspect ref="sayAspect" order="2">
+            <aop:before pointcut="execution(* say*(..)) and args(words)"
+                        method="countSentence" />
+            <aop:around pointcut="execution(* sayHello(..)) and this(bye)"
+                        method="addSay" />
+            <aop:declare-parents types-matching="learning.spring.helloworld.*"
+                                 implement-interface="learning.spring.helloworld.GoodBye"
+                                 default-impl="learning.spring.helloworld.DefaultGoodBye" />
+        </aop:aspect>
+    </aop:config>
+
+    <bean id="springHello" class="learning.spring.helloworld.SpringHello" />
+    <bean id="helloAspect" class="learning.spring.helloworld.HelloAspect" />
+    <bean id="sayAspect" class="learning.spring.helloworld.SayAspect" />
+
+</beans>
