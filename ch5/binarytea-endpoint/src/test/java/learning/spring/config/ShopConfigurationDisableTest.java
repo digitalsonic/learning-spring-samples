@@ -1,7 +1,7 @@
 package learning.spring.config;
 
 import learning.spring.binarytea.BinaryTeaApplication;
-import learning.spring.binarytea.ShopReadyHealthIndicator;
+import learning.spring.binarytea.actuator.ShopReadyHealthIndicator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Status;

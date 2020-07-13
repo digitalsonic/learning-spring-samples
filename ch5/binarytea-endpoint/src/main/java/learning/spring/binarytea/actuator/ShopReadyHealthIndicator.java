@@ -1,7 +1,7 @@
-package learning.spring.binarytea;
+package learning.spring.binarytea.actuator;
 
+import learning.spring.binarytea.BinaryTeaProperties;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 public class ShopReadyHealthIndicator extends AbstractHealthIndicator {
     private BinaryTeaProperties binaryTeaProperties;
 
-    public ShopReadyHealthIndicator(ObjectProvider<BinaryTeaProperties> binaryTeaProperties) {
+    public ShopReadyHealthIndicator(
+            ObjectProvider<BinaryTeaProperties> binaryTeaProperties) {
         this.binaryTeaProperties = binaryTeaProperties.getIfAvailable();
     }
 
