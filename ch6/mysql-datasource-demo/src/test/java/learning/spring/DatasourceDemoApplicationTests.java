@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -34,6 +35,10 @@ class DatasourceDemoApplicationTests {
         assertEquals(10, hikari.getMinimumIdle());
         assertEquals("com.mysql.cj.jdbc.Driver", hikari.getDriverClassName());
         assertEquals(jdbcUrl, hikari.getJdbcUrl());
+
+        Connection connection = hikari.getConnection();
+        assertNotNull(connection);
+        connection.close();
     }
 }
 
