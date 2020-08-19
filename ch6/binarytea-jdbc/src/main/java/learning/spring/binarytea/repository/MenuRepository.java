@@ -2,15 +2,22 @@ package learning.spring.binarytea.repository;
 
 import learning.spring.binarytea.model.MenuItem;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public class MenuRepository {
+    public static final String INSERT_SQL =
+            "insert into t_menu (name, size, price, create_time, update_time) values (?, ?, ?, now(), now())";
     private JdbcTemplate jdbcTemplate;
 
     public MenuRepository(JdbcTemplate jdbcTemplate) {
@@ -29,6 +36,35 @@ public class MenuRepository {
     public MenuItem queryForItem(Long id) {
         return jdbcTemplate.queryForObject("select * from t_menu where id = ?",
                 rowMapper(), id);
+    }
+
+    public int insertItem(MenuItem item) {
+        return jdbcTemplate.update(INSERT_SQL, item.getName(), item.getSize(),
+                item.getPrice().multiply(BigDecimal.valueOf(100)).longValue());
+    }
+
+    public int insertItemAndFillId(MenuItem item) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int affected = jdbcTemplate.update(con -> {
+            PreparedStatement preparedStatement =
+                    con.prepareStatement(INSERT_SQL, PreparedStatement.RETURN_GENERATED_KEYS);
+            // 也可以用 PreparedStatement preparedStatement =
+            //                 con.prepareStatement(INSERT_SQL, new String[] { "id" });
+
+            preparedStatement.setString(1, item.getName());
+            preparedStatement.setString(2, item.getSize());
+            preparedStatement.setLong(3,
+                    item.getPrice().multiply(BigDecimal.valueOf(100)).longValue());
+            return preparedStatement;
+        }, keyHolder);
+        if (affected == 1) {
+            item.setId(keyHolder.getKey().longValue());
+        }
+        return affected;
+    }
+
+    public int deleteItem(Long id) {
+        return jdbcTemplate.update("delete from t_menu where id = ?", id);
     }
 
     private RowMapper<MenuItem> rowMapper() {
