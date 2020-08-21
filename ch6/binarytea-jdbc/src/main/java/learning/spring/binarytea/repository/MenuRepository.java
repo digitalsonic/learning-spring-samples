@@ -1,10 +1,11 @@
 package learning.spring.binarytea.repository;
 
 import learning.spring.binarytea.model.MenuItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,8 @@ public class MenuRepository {
     public static final String INSERT_SQL =
             "insert into t_menu (name, size, price, create_time, update_time) values (?, ?, ?, now(), now())";
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public MenuRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,8 +42,16 @@ public class MenuRepository {
     }
 
     public int insertItem(MenuItem item) {
-        return jdbcTemplate.update(INSERT_SQL, item.getName(), item.getSize(),
+        String sql = "insert into t_menu (name, size, price, create_time, update_time) values " +
+                "(:name, :size, :price, now(), now())";
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("name", item.getName());
+        sqlParameterSource.addValue("size", item.getSize());
+        sqlParameterSource.addValue("price",
                 item.getPrice().multiply(BigDecimal.valueOf(100)).longValue());
+        return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+//        return jdbcTemplate.update(INSERT_SQL, item.getName(), item.getSize(),
+//                item.getPrice().multiply(BigDecimal.valueOf(100)).longValue());
     }
 
     public int insertItemAndFillId(MenuItem item) {
@@ -68,7 +79,7 @@ public class MenuRepository {
     }
 
     private RowMapper<MenuItem> rowMapper() {
-        return  (resultSet, rowNum) -> {
+        return (resultSet, rowNum) -> {
             return MenuItem.builder()
                     .id(resultSet.getLong("id"))
                     .name(resultSet.getString("name"))
