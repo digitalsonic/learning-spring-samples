@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        https://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <tx:advice id="demoTxAdvice">
+        <tx:attributes>
+            <tx:method name="showNames" read-only="true"/>
+            <tx:method name="insertRecordRequired" propagation="REQUIRED"/>
+            <tx:method name="insertRecordRequiresNew" propagation="REQUIRES_NEW"/>
+            <tx:method name="insertRecordNested" propagation="NESTED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <tx:advice id="mixTxAdvice">
+        <tx:attributes>
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="demoServiceMethods"
+                      expression="execution(* learning.spring.transaction.DemoService.*(..))"/>
+        <aop:pointcut id="mixServiceMethods"
+                      expression="execution(* learning.spring.transaction.MixService.*(..))"/>
+        <aop:advisor advice-ref="demoTxAdvice" pointcut-ref="demoServiceMethods"/>
+        <aop:advisor advice-ref="mixTxAdvice" pointcut-ref="mixServiceMethods"/>
+    </aop:config>
+</beans>
