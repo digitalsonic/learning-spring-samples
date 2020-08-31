@@ -7,9 +7,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Collection;
-import java.util.Collections;
-
 @SpringBootApplication
 @Slf4j
 public class AnnotationDemoApplication implements ApplicationRunner {
