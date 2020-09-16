@@ -1,0 +1,50 @@
+drop table t_menu if exists;
+drop table t_order if exists;
+drop table t_order_item if exists;
+drop table t_tea_maker if exists;
+
+--
+-- create table t_menu (
+--     id bigint auto_increment,
+--     name varchar(128),
+--     size varchar(16),
+--     price bigint,
+--     create_time timestamp,
+--     update_time timestamp,
+--     primary key (id)
+-- );
+
+    create table t_menu (
+       id bigint not null,
+        createTime timestamp,
+        name varchar(255),
+        price bigint,
+        size varchar(255),
+        updateTime timestamp,
+        primary key (id)
+    );
+
+    create table t_order (
+       id bigint not null,
+        amount_discount integer,
+        amount_pay bigint,
+        amount_total bigint,
+        createTime timestamp,
+        status integer,
+        updateTime timestamp,
+        maker_id bigint,
+        primary key (id)
+    );
+
+    create table t_order_item (
+       item_id bigint not null,
+        order_id bigint not null
+    )
+
+    create table t_tea_maker (
+       id bigint not null,
+        createTime timestamp,
+        name varchar(255),
+        updateTime timestamp,
+        primary key (id)
+    );

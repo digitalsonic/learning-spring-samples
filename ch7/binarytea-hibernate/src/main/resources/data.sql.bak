@@ -1,0 +1,2 @@
+-- insert into t_menu (name, size, price, create_time, update_time) values ('Java咖啡', 'MEDIUM', 1000, now(), now());
+-- insert into t_menu (name, size, price, create_time, update_time) values ('Java咖啡', 'LARGE', 1500, now(), now());
