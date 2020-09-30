@@ -8,7 +8,7 @@ import org.apache.ibatis.type.EnumOrdinalTypeHandler;
 import java.util.List;
 
 @Mapper
-public interface OrderRepository {
+public interface OrderMapper {
     @Insert("insert into t_order " +
             "(maker_id, status, amount_discount, amount_pay, amount_total, create_time, update_time) " +
             "values (#{maker.id}, #{status, typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}, " +
@@ -26,9 +26,9 @@ public interface OrderRepository {
             @Result(column = "amount_total", property = "amount.totalAmount"),
             @Result(column = "amount_pay", property = "amount.payAmount"),
             @Result(column = "maker_id", property = "maker",
-                    one = @One(select = "learning.spring.binarytea.repository.TeaMakerRepository.findById")),
+                    one = @One(select = "learning.spring.binarytea.repository.TeaMakerMapper.findById")),
             @Result(column = "id", property = "items",
-                    many = @Many(select = "learning.spring.binarytea.repository.MenuRepository.findByOrderId"))
+                    many = @Many(select = "learning.spring.binarytea.repository.MenuItemMapper.findByOrderId"))
     })
     Order findById(Long id);
 

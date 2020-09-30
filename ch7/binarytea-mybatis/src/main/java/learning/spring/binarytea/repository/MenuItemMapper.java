@@ -8,7 +8,7 @@ import org.apache.ibatis.type.EnumTypeHandler;
 import java.util.List;
 
 @Mapper
-public interface MenuRepository {
+public interface MenuItemMapper {
     @Select("select count(*) from t_menu")
     long count();
 

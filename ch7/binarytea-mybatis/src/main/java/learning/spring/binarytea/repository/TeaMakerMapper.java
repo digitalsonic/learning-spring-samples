@@ -4,7 +4,7 @@ import learning.spring.binarytea.model.TeaMaker;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
-public interface TeaMakerRepository {
+public interface TeaMakerMapper {
     @Insert("insert into t_tea_maker (name, create_time, update_time)" +
             " values (#{name}, now(), now())")
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -17,7 +17,7 @@ public interface TeaMakerRepository {
     @Results({
             @Result(column = "id", property = "id"),
             @Result(column = "id", property = "orders",
-                    many = @Many(select = "learning.spring.binarytea.repository.OrderRepository.findByMakerId"))
+                    many = @Many(select = "learning.spring.binarytea.repository.OrderMapper.findByMakerId"))
     })
     TeaMaker findById(Long id);
 }

@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class OrderRepositoryTest {
+class OrderMapperTest {
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderMapper orderMapper;
     @Autowired
-    private TeaMakerRepository makerRepository;
+    private TeaMakerMapper makerRepository;
     @Autowired
-    private MenuRepository menuRepository;
+    private MenuItemMapper menuItemMapper;
 
     @Test
     @Transactional
@@ -45,13 +45,13 @@ class OrderRepositoryTest {
                         .payAmount(Money.ofMinor(CurrencyUnit.of("CNY"), 1080))
                         .build())
                 .build();
-        assertEquals(1, orderRepository.save(order));
+        assertEquals(1, orderMapper.save(order));
 
         Long orderId = order.getId();
         assertNotNull(orderId);
-        assertEquals(1, orderRepository.addOrderItem(orderId, menuRepository.findById(2L)));
+        assertEquals(1, orderMapper.addOrderItem(orderId, menuItemMapper.findById(2L)));
 
-        order = orderRepository.findById(orderId);
+        order = orderMapper.findById(orderId);
         assertEquals(OrderStatus.ORDERED, order.getStatus());
         assertEquals(90, order.getAmount().getDiscount());
         assertEquals(maker.getId(), order.getMaker().getId());
@@ -61,11 +61,11 @@ class OrderRepositoryTest {
 
     @Test
     public void testFindByMakerId() {
-        List<Order> orders = orderRepository.findByMakerId(0L);
+        List<Order> orders = orderMapper.findByMakerId(0L);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
 
-        orders = orderRepository.findByMakerId(1L);
+        orders = orderMapper.findByMakerId(1L);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
 
