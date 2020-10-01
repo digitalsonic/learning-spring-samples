@@ -6,14 +6,12 @@ import learning.spring.binarytea.model.OrderStatus;
 import learning.spring.binarytea.model.TeaMaker;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrderMapperTest {
     @Autowired
     private OrderMapper orderMapper;
@@ -61,10 +58,12 @@ class OrderMapperTest {
 
     @Test
     public void testFindByMakerId() {
+        // 测试找不到的情况
         List<Order> orders = orderMapper.findByMakerId(0L);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
 
+        // 测试能找到的情况
         orders = orderMapper.findByMakerId(1L);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
