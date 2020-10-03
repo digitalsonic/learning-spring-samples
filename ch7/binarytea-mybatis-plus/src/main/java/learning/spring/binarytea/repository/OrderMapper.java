@@ -7,7 +7,7 @@ import org.apache.ibatis.type.EnumOrdinalTypeHandler;
 
 import java.util.List;
 
-//@Mapper
+@Mapper
 public interface OrderMapper {
     @Insert("insert into t_order " +
             "(maker_id, status, amount_discount, amount_pay, amount_total, create_time, update_time) " +

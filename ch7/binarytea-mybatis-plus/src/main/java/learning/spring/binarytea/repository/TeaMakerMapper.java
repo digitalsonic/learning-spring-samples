@@ -6,7 +6,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
-//@Mapper
+@Mapper
 public interface TeaMakerMapper {
     @Insert("insert into t_tea_maker (name, create_time, update_time)" +
             " values (#{name}, now(), now())")
