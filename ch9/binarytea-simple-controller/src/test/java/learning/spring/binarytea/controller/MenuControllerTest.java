@@ -32,7 +32,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getAll() throws Exception {
+    void testGetAll() throws Exception {
         mockMvc.perform(get("/menu"))
                 // 判断处理方法
                 .andExpect(handler().handlerType(MenuController.class))
@@ -44,7 +44,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getById() throws Exception {
+    void testGetById() throws Exception {
         mockMvc.perform(get("/menu/1"))
                 // 判断响应头
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -57,13 +57,13 @@ class MenuControllerTest {
     }
 
     @Test
-    void getByIdWithWrongId() throws Exception {
+    void testGetByIdWithWrongId() throws Exception {
         mockMvc.perform(get("/menu/100"))
                 .andExpect(content().string("null"));
     }
 
     @Test
-    void getByName() throws Exception {
+    void testGetByName() throws Exception {
         mockMvc.perform(get("/menu").param("name", "Java咖啡"))
                 .andExpect(handler().handlerType(MenuController.class))
                 .andExpect(handler().methodName("getByName"))
@@ -71,7 +71,7 @@ class MenuControllerTest {
     }
 
     @Test
-    void getByNameWithWrongName() throws Exception {
+    void testGetByNameWithWrongName() throws Exception {
         mockMvc.perform(get("/menu").param("name", "Java"))
                 .andExpect(jsonPath("$").isEmpty());
     }
