@@ -54,8 +54,8 @@ public class MenuController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<List<Optional<MenuItem>>> createBatch(@RequestParam("file") MultipartFile file) {
-        List<Optional<MenuItem>> menuItemList = new ArrayList<>();
+    public ResponseEntity<List<MenuItem>> createBatch(@RequestParam("file") MultipartFile file) {
+        List<MenuItem> menuItemList = new ArrayList<>();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
         log.info("Current URI: {}", uri);
         if (file == null || file.isEmpty()) {
@@ -65,13 +65,13 @@ public class MenuController {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             menuItemList = reader.lines().map(l -> StringUtils.split(l))
                     .filter(f -> f != null && f.length == 3)
-                    .map(f -> menuService.save(MenuItem.builder()
+                    .map(f -> MenuItem.builder()
                             .name(f[0])
                             .size(Size.valueOf(f[1]))
                             .price(Money.of(CurrencyUnit.of("CNY"), NumberUtils.createBigDecimal(f[2])))
-                            .build())
+                            .build()
                     ).collect(Collectors.toList());
-            return ResponseEntity.created(uri).body(menuItemList);
+            return ResponseEntity.created(uri).body(menuService.save(menuItemList));
         } catch (Exception e) {
             log.error("Exception occurred while creating menu list.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(menuItemList);

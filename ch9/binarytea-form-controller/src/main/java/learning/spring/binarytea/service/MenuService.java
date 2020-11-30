@@ -26,6 +26,10 @@ public class MenuService {
         return Optional.ofNullable(menuRepository.save(menuItem));
     }
 
+    public List<MenuItem> save(List<MenuItem> items) {
+        return menuRepository.saveAll(items);
+    }
+
     @Cacheable
     public List<MenuItem> getAllMenu() {
         return menuRepository.findAll();
@@ -37,6 +41,10 @@ public class MenuService {
 
     public List<MenuItem> getByName(String name) {
         return menuRepository.findAll(Example.of(MenuItem.builder().name(name).build()), Sort.by("id"));
+    }
+
+    public List<MenuItem> getByIdList(List<Long> idList) {
+        return menuRepository.findAllById(idList);
     }
 
     @Cacheable(key = "#root.methodName + '-' + #name + '-' + #size")
