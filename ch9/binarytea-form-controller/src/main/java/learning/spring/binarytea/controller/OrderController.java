@@ -28,20 +28,23 @@ public class OrderController {
     @Autowired
     private MenuService menuService;
 
-    @ModelAttribute
-    public List<Order> orderList() {
-        return orderService.getAllOrders();
+    @ModelAttribute("items")
+    public List<MenuItem> items() {
+        return menuService.getAllMenu();
     }
 
     @GetMapping
     public ModelAndView orderPage() {
-        return new ModelAndView("order");
+        return new ModelAndView("order")
+                .addObject(new NewOrderForm())
+                .addObject("orders", orderService.getAllOrders());
     }
 
     @PostMapping
     public String createNewOrder(@Valid NewOrderForm form, BindingResult result,
                                  ModelMap modelMap) {
         if (result.hasErrors()) {
+            modelMap.addAttribute("orders", orderService.getAllOrders());
             return "order";
         }
         List<MenuItem> itemList = form.getItemIdList().stream()
@@ -49,7 +52,7 @@ public class OrderController {
                 .collect(Collectors.collectingAndThen(Collectors.toList(),
                         list -> menuService.getByIdList(list)));
         Order order = orderService.createOrder(itemList, form.getDiscount());
-        modelMap.addAttribute("orderList", orderService.getAllOrders());
+        modelMap.addAttribute("orders", orderService.getAllOrders());
         return "order";
     }
 }
