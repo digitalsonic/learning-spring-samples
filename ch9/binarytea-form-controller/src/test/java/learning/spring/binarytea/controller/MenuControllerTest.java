@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,7 +24,8 @@ class MenuControllerTest {
     @BeforeEach
     void setUp(WebApplicationContext wac) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
-                .alwaysExpect(status().isOk()).build();
+//                .alwaysExpect(status().isOk())
+                .build();
     }
 
     @AfterEach
@@ -74,5 +76,13 @@ class MenuControllerTest {
     void testGetByNameWithWrongName() throws Exception {
         mockMvc.perform(get("/menu").param("name", "Java"))
                 .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void testCreateBatchWithEmptyFile() throws Exception {
+        mockMvc.perform(multipart("/menu")
+                .file("file", null))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("[]"));
     }
 }

@@ -5,6 +5,7 @@ import learning.spring.binarytea.model.MenuItem;
 import learning.spring.binarytea.model.Order;
 import learning.spring.binarytea.service.MenuService;
 import learning.spring.binarytea.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/order")
+@Slf4j
 public class OrderController {
     @Autowired
     private OrderService orderService;
@@ -52,6 +54,7 @@ public class OrderController {
                 .collect(Collectors.collectingAndThen(Collectors.toList(),
                         list -> menuService.getByIdList(list)));
         Order order = orderService.createOrder(itemList, form.getDiscount());
+        log.info("创建新订单，Order={}", order);
         modelMap.addAttribute("orders", orderService.getAllOrders());
         return "order";
     }
