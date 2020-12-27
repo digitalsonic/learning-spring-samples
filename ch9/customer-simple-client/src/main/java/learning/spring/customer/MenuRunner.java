@@ -6,11 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -32,5 +39,18 @@ public class MenuRunner implements ApplicationRunner {
 
         String menuJson = restTemplate.getForObject(binarytea + "/menu", String.class);
         log.info("完整菜单：{}", menuJson);
+
+        getAllMenu();
+    }
+
+    private void getAllMenu() {
+        ParameterizedTypeReference<List<MenuItem>> typeReference =
+                new ParameterizedTypeReference<List<MenuItem>>() {
+                };
+        URI uri = UriComponentsBuilder.fromUriString(binarytea + "/menu").build().toUri();
+        RequestEntity<Void> request = RequestEntity.get(uri).accept(MediaType.APPLICATION_JSON).build();
+        ResponseEntity<List<MenuItem>> response = restTemplate.exchange(request, typeReference);
+        log.info("响应码：{}", response.getStatusCode());
+        response.getBody().forEach(menuItem -> log.info("条目：{}", menuItem));
     }
 }
