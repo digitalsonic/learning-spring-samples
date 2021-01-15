@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>二进制奶茶</title>
+    </head>
+    <body>
+        <h1>二进制奶茶</h1>
+        <h2>请登录</h2>
+        <div>
+            <form action="#" th:action="@{/doLogin}" method="post">
+                <p>
+                    <label>用户名：</label>
+                    <input type="text" name="user" placeholder="用户名" />
+                </p>
+                <p>
+                    <label>密码：</label>
+                    <input type="password" name="pwd" placeholder="密码" />
+                </p>
+                <p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'] != null}"
+                   th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+                   style="color:#ff0000">
+                    登录失败，具体原因：
+                    <span th:text="${errorMsg}" style="color:#ff0000">失败原因</span>
+                </p>
+                <p>
+                    <input type="submit" value="提交"/>
+                </p>
+            </form>
+        </div>
+    </body>
+</html>
