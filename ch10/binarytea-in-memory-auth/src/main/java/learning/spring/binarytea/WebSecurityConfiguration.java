@@ -50,7 +50,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         UserDetails employee = User.builder()
                 .username("lilei")
                 .password("binarytea")
-                .authorities("read_order", "write_order")
+                .authorities("READ_ORDER", "WRITE_ORDER")
                 .passwordEncoder(encoder::encode)
                 .build();
         return new InMemoryUserDetailsManager(employee);

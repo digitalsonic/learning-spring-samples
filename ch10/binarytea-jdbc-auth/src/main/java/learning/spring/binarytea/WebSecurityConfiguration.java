@@ -61,7 +61,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         UserDetails manager = User.builder()
                 .username("HanMeimei")
                 .password("{bcrypt}$2a$10$iAty2GrJu9WfpksIen6qX.vczLmXlp.1q1OHBxWEX8BIldtwxHl3u")
-                .authorities("read_order", "write_order")
+                .authorities("READ_ORDER", "WRITE_ORDER")
                 .build();
         userDetailsManager.createUser(manager);
         return userDetailsManager;
