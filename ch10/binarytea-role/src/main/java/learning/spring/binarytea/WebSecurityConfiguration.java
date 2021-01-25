@@ -47,11 +47,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .anonymous()
-                    .key("binarytea_anonymous")
-                    .authorities("READ_MENU").and()
+                    .key("binarytea_anonymous").and()
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
-                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").hasAuthority("READ_MENU")
+                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").access("isAnonymous() or hasAuthority('READ_MENU')")
                     .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
                     .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
                     .mvcMatchers(HttpMethod.POST, "/order").hasAuthority("WRITE_ORDER")
