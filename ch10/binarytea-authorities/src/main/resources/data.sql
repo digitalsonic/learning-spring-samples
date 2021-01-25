@@ -9,7 +9,10 @@ insert into t_order (maker_id, status, amount_discount, amount_pay, amount_total
 insert into t_order_item (order_id, item_id) values (1, 1);
 
 insert into users (username, password, enabled) values ('LiLei', '{bcrypt}$2a$10$iAty2GrJu9WfpksIen6qX.vczLmXlp.1q1OHBxWEX8BIldtwxHl3u', true);
-insert into authorities (username, authority) values ('LiLei', 'ROLE_TEA_MAKER');
+insert into authorities (username, authority) values ('LiLei', 'READ_MENU');
+insert into authorities (username, authority) values ('LiLei', 'READ_ORDER');
+insert into authorities (username, authority) values ('LiLei', 'WRITE_ORDER');
 
 insert into users (username, password, enabled) values ('ZhangSan', '{bcrypt}$2a$10$iAty2GrJu9WfpksIen6qX.vczLmXlp.1q1OHBxWEX8BIldtwxHl3u', true);
-insert into authorities (username, authority) values ('ZhangSan', 'ROLE_USER');
+insert into authorities (username, authority) values ('ZhangSan', 'READ_MENU');
+insert into authorities (username, authority) values ('ZhangSan', 'READ_ORDER');

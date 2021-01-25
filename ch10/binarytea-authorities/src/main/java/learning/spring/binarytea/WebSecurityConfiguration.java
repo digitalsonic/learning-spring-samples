@@ -1,6 +1,5 @@
 package learning.spring.binarytea;
 
-import learning.spring.binarytea.support.RoleBasedJdbcUserDetailsManager;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -87,12 +86,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService(ObjectProvider<DataSource> dataSources) {
-        RoleBasedJdbcUserDetailsManager userDetailsManager = new RoleBasedJdbcUserDetailsManager();
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
         userDetailsManager.setDataSource(dataSources.getIfAvailable());
         UserDetails manager = User.builder()
                 .username("HanMeimei")
                 .password("{bcrypt}$2a$10$iAty2GrJu9WfpksIen6qX.vczLmXlp.1q1OHBxWEX8BIldtwxHl3u")
-                .roles("MANAGER")
+                .authorities("READ_MENU", "WRITE_MENU", "READ_ORDER", "WRITE_ORDER")
                 .build();
         userDetailsManager.createUser(manager);
         return userDetailsManager;
