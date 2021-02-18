@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.boot.ApplicationArguments;
@@ -65,16 +64,14 @@ public class CustomerApplication {
         return () -> (args.containsOption("wait") ? 0 : 1);
     }
 
-    private ClientHttpRequestFactory requestFactory() {
-        PoolingHttpClientConnectionManager connectionManager =
-                new PoolingHttpClientConnectionManager(30, TimeUnit.SECONDS);
-        connectionManager.setMaxTotal(200); // 连接池大小
-        connectionManager.setDefaultMaxPerRoute(20); // 每个主机的最大连接数
-
+    @Bean
+    public ClientHttpRequestFactory requestFactory() {
         HttpClientBuilder builder = HttpClientBuilder.create()
                 .disableAutomaticRetries() // 默认重试是开启的，建议关闭
                 .evictIdleConnections(10, TimeUnit.MINUTES) // 空闲连接10分钟关闭
-                .setConnectionManager(connectionManager);
+                .setConnectionTimeToLive(30, TimeUnit.SECONDS) // 连接的TTLS时间
+                .setMaxConnTotal(200) // 连接池大小
+                .setMaxConnPerRoute(20); // 每个主机的最大连接数
 
         // 调整Keep-Alive策略
         builder.setKeepAliveStrategy((response, context) ->

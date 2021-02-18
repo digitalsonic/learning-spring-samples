@@ -4,18 +4,22 @@ import learning.spring.customer.model.TokenRequest;
 import learning.spring.customer.model.TokenResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateRequestCustomizer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
 @Slf4j
 public class JwtClientHttpRequestInitializer implements RestTemplateRequestCustomizer {
+    @Autowired
+    private ClientHttpRequestFactory requestFactory;
     @Value("${jwt.username}")
     private String username;
     @Value("${jwt.password}")
@@ -47,7 +51,8 @@ public class JwtClientHttpRequestInitializer implements RestTemplateRequestCusto
     }
 
     private ResponseEntity<TokenResponse> acquireToken() {
-        return new RestTemplate().postForEntity(binarytea + "/token",
-                new TokenRequest(username, password), TokenResponse.class);
+        return new RestTemplate(requestFactory) // 用个简单的RestTemplate来获取Token
+                .postForEntity(binarytea + "/token",
+                        new TokenRequest(username, password), TokenResponse.class);
     }
 }
