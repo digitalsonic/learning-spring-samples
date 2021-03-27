@@ -19,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +44,7 @@ public class OrderController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public List<Order> listOrders() {
         return orderService.getAllOrders();
     }
@@ -64,14 +64,14 @@ public class OrderController {
     @ResponseBody
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> createNewOrder(@RequestBody @Valid NewOrderForm form,
-                                                      BindingResult result) {
+    public ResponseEntity<Order> createNewOrder(@RequestBody @Valid NewOrderForm form,
+                                                BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(Collections.emptyList());
+            return ResponseEntity.badRequest().body(null);
         }
-        createOrder(form);
+        Order order = createOrder(form);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
-        return ResponseEntity.created(uri).body(orderService.getAllOrders());
+        return ResponseEntity.created(uri).body(order);
     }
 
     private Order createOrder(NewOrderForm form) {
