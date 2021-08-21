@@ -5,6 +5,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,11 +30,11 @@ public class CircuitBreakerAspect {
             if (!errorCounter.containsKey(signature)) {
                 resetCounter(signature);
             }
-            if (errorCounter.get(signature).get() > THRESHOLD &&
+            if (errorCounter.get(signature).get() >= THRESHOLD &&
                     probeCounter.get(signature).get() < THRESHOLD) {
-                log.warn("断路器打开，第{}次直接返回null",
+                log.warn("断路器打开，第{}次直接返回503",
                         probeCounter.get(signature).incrementAndGet());
-                return null;
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
             }
 
             retVal = pjp.proceed();

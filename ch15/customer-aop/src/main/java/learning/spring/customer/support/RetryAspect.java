@@ -20,6 +20,7 @@ public class RetryAspect {
         String signature = pjp.getSignature().toLongString();
         log.info("带重试机制调用{}方法", signature);
         Object ret = null;
+        Exception lastEx = null;
         for (int i = 1; i <= THRESHOLD; i++) {
             try {
                 ret = pjp.proceed();
@@ -27,13 +28,14 @@ public class RetryAspect {
                 return ret;
             } catch (Exception e) {
                 log.warn("执行失败", e);
+                lastEx = e;
                 try {
                     TimeUnit.MILLISECONDS.sleep(DURATION);
                 } catch (InterruptedException ie) {
                 }
             }
         }
-        log.error("{}方法最终执行失败", signature);
-        return ret;
+        log.error("{}方法最终执行失败，抛出异常{}", signature, lastEx);
+        throw lastEx;
     }
 }
