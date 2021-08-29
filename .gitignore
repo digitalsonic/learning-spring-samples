@@ -12,3 +12,5 @@ buildNumber.properties
 # IDEA files
 .idea
 *.iml
+.DS_Store
+
