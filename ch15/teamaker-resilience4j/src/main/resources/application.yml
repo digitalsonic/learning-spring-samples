@@ -1,5 +1,8 @@
 spring.application.name: tea-maker
 server.port: 8082
+
+spring.cloud.zookeeper.connect-string: "localhost:2181"
+
 tea-maker:
   id: 1
   time-per-order: 1s
