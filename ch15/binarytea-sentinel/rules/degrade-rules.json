@@ -1,0 +1,10 @@
+[
+  {
+    "resource": "tea-maker",
+    "grade": 2,
+    "count": 3,
+    "timeWindow": 60,
+    "minRequestAmount": 3,
+    "statIntervalMs": 60000
+  }
+]
