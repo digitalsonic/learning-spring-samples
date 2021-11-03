@@ -1,9 +1,11 @@
 package learning.spring.binarytea;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.datatype.jodamoney.JodaMoneyModule;
 import learning.spring.binarytea.support.log.LogHandlerInterceptor;
 import learning.spring.binarytea.support.ready.ReadyStateCheckHandlerInterceptor;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -30,6 +32,11 @@ public class BinaryTeaApplication implements WebMvcConfigurer {
                 .addPathPatterns("/**").excludePathPatterns("/static/**");
         registry.addInterceptor(readyStateCheckHandlerInterceptor())
                 .addPathPatterns("/menu", "/menu/**", "/order", "/order/**");
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper jsonObjectMapper) {
+        return new Jackson2JsonMessageConverter(jsonObjectMapper);
     }
 
     @Bean

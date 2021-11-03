@@ -18,7 +18,8 @@ public class TeaMakerClient {
 
     public void notifyPaidOrder(Long id) {
         log.info("发送消息给TeaMaker，通知订单{}", id);
-        amqpTemplate.convertAndSend("notify.order.paid", OrderMessage.builder().orderId(id).build());
+        amqpTemplate.convertAndSend("notify.order.paid",
+                OrderMessage.builder().orderId(id).build());
     }
 
     @RabbitListener(queues = "notify.order.finished")
