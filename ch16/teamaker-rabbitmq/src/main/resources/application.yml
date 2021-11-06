@@ -1,0 +1,26 @@
+spring.application.name: tea-maker
+server.port: 8082
+
+spring.cloud.zookeeper.connect-string: "localhost:2181"
+
+tea-maker:
+  id: 1
+  time-per-order: 1s
+
+resilience4j:
+  ratelimiter:
+    instances:
+      make-tea:
+        limit-for-period: 1
+        limit-refresh-period: 10s
+        timeout-duration: 2s
+        register-health-indicator: true
+
+management:
+  health.ratelimiters.enabled: true
+  endpoints.web.exposure.include: "*"
+  endpoint.health.show-details: always
+
+spring:
+  rabbitmq:
+    addresses: "amqp://spring:spring@localhost"

@@ -25,6 +25,7 @@ public class TeaMakerClient {
     @RabbitListener(queues = "notify.order.finished")
     public void receiveFinishedOrder(OrderMessage message) {
         if (OrderStatus.FINISHED.name().equals(message.getState())) {
+            log.info("收到订单[{}]的完成通知");
             applicationEventPublisher.publishEvent(new OrderFinishedEvent(message));
         } else {
             log.warn("被通知到的订单[{}]状态不正确", message.getOrderId());

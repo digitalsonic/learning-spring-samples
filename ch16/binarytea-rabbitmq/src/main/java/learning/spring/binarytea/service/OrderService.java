@@ -77,6 +77,7 @@ public class OrderService {
         order.get().setStatus(status);
         if (OrderStatus.PAID == status) {
             teaMakerClient.notifyPaidOrder(id);
+            order.get().setStatus(OrderStatus.MAKING);
         }
         return orderRepository.save(order.get());
     }
@@ -88,9 +89,9 @@ public class OrderService {
     @EventListener
     public void finishOrder(OrderFinishedEvent event) {
         OrderMessage message = (OrderMessage) event.getSource();
+        // 没考虑性能等问题
         Order order = modifyOrderStatus(message.getOrderId(), OrderStatus.FINISHED);
         if (order != null) {
-            // 没考虑性能等问题
             teaMakerRepository.findById(message.getTeaMakerId()).ifPresent(order::setMaker);
             orderRepository.save(order);
         }
