@@ -8,18 +8,27 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: menu-route
-          uri: lb://binarytea
-          predicates:
-            - Path=/menu/**
+#        - id: menu-route
+#          uri: lb://binarytea
+#          predicates:
+#            - Path=/menu/**
         - id: order-route
           uri: lb://binarytea
           predicates:
-            - Path=/order/**
+            - name: Path
+              args:
+                patterns: /order/**
         - id: token-route
           uri: http://localhost:8080
           predicates:
             - Path=/token
+          metadata:
+            connect-timeout: 500
+            response-timeout: 500
+      httpclient:
+        compression: true
+        connect-timeout: 1000
+        response-timeout: 3s
 
 management:
   endpoint.gateway.enabled: true
