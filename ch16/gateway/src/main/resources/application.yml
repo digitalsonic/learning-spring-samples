@@ -18,17 +18,32 @@ spring:
             - name: Path
               args:
                 patterns: /order/**
+          filters:
+            - name: RemoveRequestHeader
+              args:
+                name: User-Agent
         - id: token-route
           uri: http://localhost:8080
           predicates:
             - Path=/token
+          filters:
+            - PreserveHostHeader
           metadata:
             connect-timeout: 500
             response-timeout: 500
+        - id: new-token-route
+          uri: lb://binarytea
+          predicates:
+            - Path=/binarytea/token
+            - Method=POST
+          filters:
+            - StripPrefix=1
       httpclient:
         compression: true
         connect-timeout: 1000
         response-timeout: 3s
+      default-filters:
+        - SecureHeaders
 
 management:
   endpoint.gateway.enabled: true
