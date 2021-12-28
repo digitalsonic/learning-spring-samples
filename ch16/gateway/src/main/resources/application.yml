@@ -8,10 +8,19 @@ spring:
   cloud:
     gateway:
       routes:
-#        - id: menu-route
-#          uri: lb://binarytea
-#          predicates:
-#            - Path=/menu/**
+        - id: menu-route
+          uri: lb://binarytea
+          predicates:
+            - Path=/menu/**
+          filters:
+            - SecureHeaders
+            - FallbackHeaders
+            - name: CircuitBreaker
+              args:
+                name: menu-cb
+                fallbackUri: forward:/fallback
+                statusCodes:
+                  - INTERNAL_SERVER_ERROR
         - id: order-route
           uri: lb://binarytea
           predicates:
