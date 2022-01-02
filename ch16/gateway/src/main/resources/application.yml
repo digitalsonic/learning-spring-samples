@@ -10,8 +10,6 @@ spring:
     port: 6379
   cloud:
     gateway:
-      filter:
-        request-rate-limiter.deny-empty-key: false
       routes:
         - id: menu-route
           uri: lb://binarytea
@@ -19,11 +17,12 @@ spring:
             - Path=/menu/**
           filters:
             - SecureHeaders
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity: 30
-                redis-rate-limiter.requestedTokens: 30
+#            - name: RequestRateLimiter
+#              args:
+#                keyResolver: "#{@pathKeyResolver}"
+#                redis-rate-limiter.replenishRate: 1
+#                redis-rate-limiter.burstCapacity: 30
+#                redis-rate-limiter.requestedTokens: 30
             - FallbackHeaders
             - name: CircuitBreaker
               args:
@@ -50,8 +49,8 @@ spring:
             - name: Retry
               args:
                 retries: 5
-                methods: GET, POST
-                exceptions: Exception
+                methods: POST
+#                series: CLIENT_ERROR
                 backoff:
                   firstBackoff: 10ms
                   maxBackoff: 50ms
