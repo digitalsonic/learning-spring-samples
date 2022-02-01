@@ -16,7 +16,7 @@ public class Application {
     }
 
     public void sayHello() {
-        Hello hello = (Hello) applicationContext.getBean("hello");
+        Hello hello = applicationContext.getBean("hello", Hello.class);
         System.out.println(hello.hello());
     }
 }

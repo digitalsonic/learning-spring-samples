@@ -8,6 +8,8 @@ public class Application {
     private BeanFactory beanFactory;
 
     public static void main(String[] args) {
+//        Hello hello = new Hello();
+//        System.out.println(hello.hello());
         Application application = new Application();
         application.sayHello();
     }
@@ -20,7 +22,8 @@ public class Application {
     }
 
     public void sayHello() {
-        Hello hello = (Hello) beanFactory.getBean("hello");
+//        Hello hello = (Hello) beanFactory.getBean("hello");
+        Hello hello = beanFactory.getBean("hello", Hello.class);
         System.out.println(hello.hello());
     }
 }
