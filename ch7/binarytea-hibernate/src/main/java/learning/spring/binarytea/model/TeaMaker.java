@@ -20,11 +20,6 @@ public class TeaMaker {
     private Long id;
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "maker_id")
-    @OrderBy("id desc")
-    private List<Order> orders;
-
     @Column(updatable = false)
     @CreationTimestamp
     private Date createTime;
