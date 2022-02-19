@@ -1,6 +1,5 @@
 package learning.spring.binarytea.repository;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import learning.spring.binarytea.model.TeaMaker;
 import org.apache.ibatis.session.RowBounds;
