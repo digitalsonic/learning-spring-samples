@@ -9,9 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 @Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "t_order")
 public class Order {
@@ -20,6 +19,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "maker_id")
     private TeaMaker maker;
 
     @ManyToMany
