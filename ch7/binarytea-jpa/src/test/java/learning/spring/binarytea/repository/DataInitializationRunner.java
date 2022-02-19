@@ -1,6 +1,11 @@
 package learning.spring.binarytea.repository;
 
-import learning.spring.binarytea.model.*;
+import learning.spring.binarytea.model.Amount;
+import learning.spring.binarytea.model.MenuItem;
+import learning.spring.binarytea.model.Order;
+import learning.spring.binarytea.model.OrderStatus;
+import learning.spring.binarytea.model.Size;
+import learning.spring.binarytea.model.TeaMaker;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
