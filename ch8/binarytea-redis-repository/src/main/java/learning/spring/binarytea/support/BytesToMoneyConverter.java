@@ -1,13 +1,10 @@
 package learning.spring.binarytea.support;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-
-import java.nio.charset.StandardCharsets;
 
 @ReadingConverter
 public class BytesToMoneyConverter implements Converter<byte[], Money> {
