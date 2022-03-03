@@ -4,7 +4,12 @@ import learning.spring.binarytea.model.MenuItem;
 import learning.spring.binarytea.model.Size;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.sql.init.mode=never",
+        "spring.jpa.hibernate.ddl-auto=create-drop"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MenuRepositoryTest {
     @Autowired
