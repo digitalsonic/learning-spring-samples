@@ -2,7 +2,6 @@ package learning.spring.binarytea.repository;
 
 import learning.spring.binarytea.model.Order;
 import learning.spring.binarytea.model.OrderStatus;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -18,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(properties = {"data.init.enable=true",
         "spring.sql.init.mode=never", "spring.jpa.hibernate.ddl-auto=create-drop"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Slf4j
 class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository;
