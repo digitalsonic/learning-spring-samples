@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.sql.init.mode=never",
+        "spring.jpa.hibernate.ddl-auto=create-drop"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MenuRepositoryTest {
     @Autowired
