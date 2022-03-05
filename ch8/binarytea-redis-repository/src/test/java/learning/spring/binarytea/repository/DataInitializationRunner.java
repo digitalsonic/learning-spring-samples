@@ -57,7 +57,7 @@ public class DataInitializationRunner implements ApplicationRunner {
         orderRepository.save(order);
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
         }
 
