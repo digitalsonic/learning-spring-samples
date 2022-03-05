@@ -14,7 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(properties = "data.init.enable=true")
+@SpringBootTest(properties = {"data.init.enable=true",
+        "spring.sql.init.mode=never", "spring.jpa.hibernate.ddl-auto=create-drop"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrderRepositoryTest {
     @Autowired
