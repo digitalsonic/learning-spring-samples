@@ -17,10 +17,6 @@
                     <label>密码：</label>
                     <input type="password" name="pwd" placeholder="密码" />
                 </p>
-                <p>
-                    <label>记住我：</label>
-                    <input type="checkbox" name="remember" />是
-                </p>
                 <p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'] != null}"
                    th:with="errorMsg=${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
                    style="color:#ff0000">
