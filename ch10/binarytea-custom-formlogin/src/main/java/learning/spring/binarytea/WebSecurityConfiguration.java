@@ -24,6 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
+                    .mvcMatchers("/actuator/*").permitAll()
                     .anyRequest().authenticated().and()
                 .formLogin() // 使用表单登录
                     .loginPage("/login").permitAll() // 设置登录页地址，全员可访问

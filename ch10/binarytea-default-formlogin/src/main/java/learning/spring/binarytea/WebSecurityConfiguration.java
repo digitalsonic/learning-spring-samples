@@ -12,7 +12,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/menu").permitAll()
+                    .antMatchers("/").permitAll()
+                    .mvcMatchers("/actuator/*").permitAll()
                     .anyRequest().authenticated().and()
                 .formLogin() // 使用表单登录
                     .defaultSuccessUrl("/order")
