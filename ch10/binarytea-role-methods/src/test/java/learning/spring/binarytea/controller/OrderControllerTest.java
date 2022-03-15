@@ -73,6 +73,7 @@ class OrderControllerTest {
         ;
     }
 
+    @Test
     void testOrderPageWithAuthenticatedUser() throws Exception {
         mockMvc.perform(get("/order").with(user("LiLei")
                 .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"))))

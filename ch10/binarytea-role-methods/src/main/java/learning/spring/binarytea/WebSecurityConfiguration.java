@@ -27,9 +27,7 @@ import javax.sql.DataSource;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private PersistentTokenRepository tokenRepository;
+    private ObjectProvider<DataSource> dataSources;
 
     @Bean("/login")
     public UrlFilenameViewController loginController() {
@@ -46,8 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .key("binarytea_anonymous").and()
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
-                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**")
-                        .access("isAnonymous() or hasAuthority('READ_MENU')")
+                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").access("isAnonymous() or hasAuthority('READ_MENU')")
                     .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
                     .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
                     .mvcMatchers(HttpMethod.POST, "/order").hasAuthority("WRITE_ORDER")
@@ -64,8 +61,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .key("binarytea")
                     .rememberMeParameter("remember")
                     .tokenValiditySeconds(24 * 60 * 60)
-                    .tokenRepository(tokenRepository) // 配置持久化令牌
-                    .userDetailsService(userDetailsService).and()
+                    .tokenRepository(persistentTokenRepository(dataSources)) // 配置持久化令牌
+                    .userDetailsService(userDetailsService(dataSources)).and()
                 .logout()
                     .logoutSuccessUrl("/")
                     .logoutRequestMatcher(new OrRequestMatcher(
