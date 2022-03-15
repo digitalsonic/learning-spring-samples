@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -74,7 +75,8 @@ class OrderControllerTest {
 
     @Test
     void testOrderPageWithAuthenticatedUser() throws Exception {
-        mockMvc.perform(get("/order").with(user("LiLei")))
+        mockMvc.perform(get("/order").with(user("LiLei")
+                .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"))))
                 .andExpect(status().is2xxSuccessful());
         mockMvc.perform(get("/order").with(httpBasic("LiLei", "binarytea")))
                 .andExpect(status().is2xxSuccessful());

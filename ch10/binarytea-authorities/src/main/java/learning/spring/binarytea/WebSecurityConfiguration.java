@@ -5,19 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.JdbcUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -30,9 +24,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private PersistentTokenRepository tokenRepository;
+    private ObjectProvider<DataSource> dataSources;
 
     @Bean("/login")
     public UrlFilenameViewController loginController() {
@@ -50,6 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .authorities("READ_MENU").and()
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
+                    .mvcMatchers("/actuator/*").permitAll()
                     .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").hasAuthority("READ_MENU")
                     .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
                     .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
@@ -67,8 +60,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .key("binarytea")
                     .rememberMeParameter("remember")
                     .tokenValiditySeconds(24 * 60 * 60)
-                    .tokenRepository(tokenRepository) // 配置持久化令牌
-                    .userDetailsService(userDetailsService).and()
+                    .tokenRepository(persistentTokenRepository(dataSources)) // 配置持久化令牌
+                    .userDetailsService(userDetailsService(dataSources)).and()
                 .logout()
                     .logoutSuccessUrl("/")
                     .logoutRequestMatcher(new OrRequestMatcher(
