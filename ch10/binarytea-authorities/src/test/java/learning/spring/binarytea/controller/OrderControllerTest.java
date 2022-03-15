@@ -76,7 +76,7 @@ class OrderControllerTest {
     @Test
     void testOrderPageWithAuthenticatedUser() throws Exception {
         mockMvc.perform(get("/order").with(user("LiLei")
-                .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"))))
+                .authorities(AuthorityUtils.createAuthorityList("READ_ORDER"))))
                 .andExpect(status().is2xxSuccessful());
         mockMvc.perform(get("/order").with(httpBasic("LiLei", "binarytea")))
                 .andExpect(status().is2xxSuccessful());
