@@ -66,7 +66,7 @@ class MenuRepositoryTest {
     @Test
     @Order(3)
     void testQueryForItem() {
-        MenuItem item = menuRepository.getOne(1L);
+        MenuItem item = menuRepository.getById(1L);
         assertNotNull(item);
         assertItem(1L, "Go橙汁");
     }
