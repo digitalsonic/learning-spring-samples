@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -74,7 +74,7 @@ class MenuRepositoryTest {
     @Test
     @Order(3)
     void testInsertItems() {
-        List<MenuItem> items = Arrays.asList("Go橙汁", "Python气泡水", "JavaScript苏打水").stream()
+        List<MenuItem> items = Stream.of("Go橙汁", "Python气泡水", "JavaScript苏打水")
                 .map(n -> MenuItem.builder().name(n).size("中杯").price(BigDecimal.valueOf(12.00)).build())
                 .collect(Collectors.toList());
         assertEquals(3, menuRepository.insertItems(items));
