@@ -15,11 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -49,7 +49,7 @@ class MenuRepositoryTest {
     @Test
     @Order(1)
     void testInsertItem() {
-        List<MenuItem> items = Arrays.asList("Go橙汁", "Python气泡水", "JavaScript苏打水").stream()
+        List<MenuItem> items = Stream.of("Go橙汁", "Python气泡水", "JavaScript苏打水")
                 .map(n -> MenuItem.builder().name(n)
                         .size(Size.MEDIUM)
                         .price(Money.ofMinor(CurrencyUnit.of("CNY"), 1200))

@@ -13,9 +13,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DataInitializationRunner implements ApplicationRunner {
     @Autowired
@@ -28,22 +28,16 @@ public class DataInitializationRunner implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        List<MenuItem> menuItemList = Arrays.asList("Go橙汁", "Python气泡水", "JavaScript苏打水").stream()
+        List<MenuItem> menuItemList = Stream.of("Go橙汁", "Python气泡水", "JavaScript苏打水")
                 .map(n -> MenuItem.builder().name(n)
                         .size(Size.MEDIUM)
                         .price(Money.ofMinor(CurrencyUnit.of("CNY"), 1200))
                         .build())
-                .map(m -> {
-                    menuRepository.save(m);
-                    return m;
-                }).collect(Collectors.toList());
+                .peek(m -> menuRepository.save(m)).collect(Collectors.toList());
 
-        List<TeaMaker> makerList = Arrays.asList("LiLei", "HanMeimei").stream()
+        List<TeaMaker> makerList = Stream.of("LiLei", "HanMeimei")
                 .map(n -> TeaMaker.builder().name(n).build())
-                .map(m -> {
-                    makerRepository.save(m);
-                    return m;
-                }).collect(Collectors.toList());
+                .peek(m -> makerRepository.save(m)).collect(Collectors.toList());
         Order order = Order.builder()
                 .maker(makerList.get(0))
                 .amount(Amount.builder()
@@ -51,7 +45,7 @@ public class DataInitializationRunner implements ApplicationRunner {
                         .totalAmount(Money.ofMinor(CurrencyUnit.of("CNY"), 1200))
                         .payAmount(Money.ofMinor(CurrencyUnit.of("CNY"), 1080))
                         .build())
-                .items(Arrays.asList(menuItemList.get(0)))
+                .items(List.of(menuItemList.get(0)))
                 .status(OrderStatus.ORDERED)
                 .build();
         orderRepository.save(order);
@@ -68,7 +62,7 @@ public class DataInitializationRunner implements ApplicationRunner {
                         .totalAmount(Money.ofMinor(CurrencyUnit.of("CNY"), 1200))
                         .payAmount(Money.ofMinor(CurrencyUnit.of("CNY"), 1200))
                         .build())
-                .items(Arrays.asList(menuItemList.get(1)))
+                .items(List.of(menuItemList.get(1)))
                 .status(OrderStatus.ORDERED)
                 .build();
         orderRepository.save(order);
