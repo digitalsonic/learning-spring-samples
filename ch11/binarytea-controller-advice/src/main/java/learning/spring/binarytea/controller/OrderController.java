@@ -65,7 +65,7 @@ public class OrderController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> createNewOrder(@RequestBody @Valid NewOrderForm form,
-                                                BindingResult result) {
+                                                      BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(null);
         }
