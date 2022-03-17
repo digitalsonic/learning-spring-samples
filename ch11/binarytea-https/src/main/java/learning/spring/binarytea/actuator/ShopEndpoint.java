@@ -19,7 +19,7 @@ public class ShopEndpoint {
     @ReadOperation
     public String state() {
         if (binaryTeaProperties == null || !binaryTeaProperties.isReady()) {
-            return "We're not ready";
+            return "We're not ready.";
         } else {
             return "We open " + binaryTeaProperties.getOpenHours() + ".";
         }
