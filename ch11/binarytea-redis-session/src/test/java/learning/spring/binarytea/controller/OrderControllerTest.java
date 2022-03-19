@@ -6,14 +6,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.session.web.http.SessionRepositoryFilter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
 
+import java.util.Base64;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,9 +31,12 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringBootTest
 class OrderControllerTest {
@@ -91,12 +101,60 @@ class OrderControllerTest {
                 .param("pwd", "binarytea")
                 .param("remember", "1")
                 .with(csrf())) // 提交的内容里要包含一个CSRF令牌
-                .andExpect(authenticated())
+//                .andExpect(authenticated())
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().maxAge("remember-me", 24 * 60 * 60));
         assertEquals(1,
                 jdbcTemplate.queryForObject("select count(1) from persistent_logins", Integer.class));
         assertEquals("LiLei",
                 jdbcTemplate.queryForObject("select username from persistent_logins", String.class));
+    }
+
+    @Test
+    void testModifyOrdersToPaidWithCsrfFail() throws Exception {
+        mockMvc.perform(put("/order")
+                .param("id", "1").with(userLiLei()))
+                .andExpect(status().is4xxClientError());
+        mockMvc.perform(put("/order")
+                .param("id", "1").with(userLiLei())
+                .with(csrf().useInvalidToken()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testModifyOrdersToPaid() throws Exception {
+        mockMvc.perform(put("/order").param("id", "1")
+                .with(userLiLei()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("order"))
+                .andExpect(model().attribute("success_count", 1));
+    }
+
+//    @Test
+    void testLoginWithJdbcSession() throws Exception {
+        mockMvc.perform(get("/order"))
+                .andExpect(status().is3xxRedirection());
+
+        MvcResult result = mockMvc.perform(post("/doLogin")
+                .param("user", "LiLei").param("pwd", "binarytea")
+                .with(csrf())).andReturn();
+        Cookie sessionCookie = result.getResponse().getCookie("SESSION");
+        String sessionId = new String(Base64.getDecoder().decode(sessionCookie.getValue()));
+        String id = jdbcTemplate.queryForObject(
+                "select PRIMARY_ID from SPRING_SESSION where SESSION_ID='" + sessionId + "'",
+                String.class);
+        assertNotNull(id);
+        int attrCount = jdbcTemplate.queryForObject(
+                "select count(*) from SPRING_SESSION_ATTRIBUTES where SESSION_PRIMARY_ID='" + id + "'",
+                Integer.class);
+        assertTrue(attrCount > 0);
+
+        mockMvc.perform(get("/order").cookie(sessionCookie))
+                .andExpect(status().isOk());
+    }
+
+    private SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userLiLei() {
+        return user("LiLei")
+                .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"));
     }
 }
