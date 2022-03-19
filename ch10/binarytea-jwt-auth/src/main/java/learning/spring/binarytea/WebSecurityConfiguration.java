@@ -117,7 +117,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PersistentTokenRepository persistentTokenRepository(ObjectProvider<DataSource> dataSources) {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSources.getIfAvailable());
-        tokenRepository.setCreateTableOnStartup(true);
+        tokenRepository.setCreateTableOnStartup(false);
         return tokenRepository;
     }
 
