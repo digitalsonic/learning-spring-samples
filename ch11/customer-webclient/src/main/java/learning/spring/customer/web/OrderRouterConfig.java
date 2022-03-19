@@ -16,8 +16,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public class OrderRouterConfig {
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private OrderHandler orderHandler;
 
     @Bean
     public RouterFunction<?> orderRouter() {
@@ -25,7 +23,7 @@ public class OrderRouterConfig {
                 .GET("/order",
                         RequestPredicates.accept(MediaType.APPLICATION_JSON),
                         request -> ok().body(orderService.getAllOrders(), Order.class))
-                .POST("/order", orderHandler::createNewOrder)
+                .POST("/order", orderHandler()::createNewOrder)
                 .build();
     }
 
