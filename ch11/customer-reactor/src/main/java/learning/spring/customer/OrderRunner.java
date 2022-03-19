@@ -59,7 +59,6 @@ public class OrderRunner implements ApplicationRunner {
         NewOrderForm form = NewOrderForm.builder()
                 .itemIdList(Arrays.asList("1"))
                 .discount(90).build();
-
         URI uri = UriComponentsBuilder.fromUriString(binarytea + "/order").build().toUri();
         RequestEntity<NewOrderForm> request = RequestEntity.post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
