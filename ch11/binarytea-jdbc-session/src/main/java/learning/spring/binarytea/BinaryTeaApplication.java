@@ -29,6 +29,7 @@ public class BinaryTeaApplication implements WebMvcConfigurer {
     public EmbeddedDatabase dataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
+                .addScript("org/springframework/session/jdbc/schema-drop-h2.sql")
                 .addScript("org/springframework/session/jdbc/schema-h2.sql")
                 .build();
     }
