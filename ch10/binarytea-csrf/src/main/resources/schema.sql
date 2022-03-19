@@ -2,6 +2,8 @@ drop table if exists t_menu;
 drop table if exists t_order;
 drop table if exists t_order_item;
 drop table if exists t_tea_maker;
+drop table if exists users;
+drop table if exists authorities;
 
 create table t_menu (
     id bigint not null auto_increment,
