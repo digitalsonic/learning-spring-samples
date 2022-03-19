@@ -26,6 +26,8 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -86,8 +88,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/").permitAll()
                     .mvcMatchers("/actuator/*").permitAll()
                     .mvcMatchers(HttpMethod.POST, "/token").permitAll()
-                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**")
-                        .access("isAnonymous() or hasAuthority('READ_MENU')")
+                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").access("isAnonymous() or hasAuthority('READ_MENU')")
                     .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
                     .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
                     .mvcMatchers(HttpMethod.POST, "/order").hasAuthority("WRITE_ORDER")
@@ -109,8 +110,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout()
                     .logoutSuccessUrl("/")
                     .logoutRequestMatcher(new OrRequestMatcher(
-                        new AntPathRequestMatcher("/logout", "GET"),
-                        new AntPathRequestMatcher("/logout", "POST")));
+                            new AntPathRequestMatcher("/logout", "GET"),
+                            new AntPathRequestMatcher("/logout", "POST"))).and()
+                .csrf()
+                    .csrfTokenRepository(tokenRepository());
+    }
+
+    @Bean
+    public CsrfTokenRepository tokenRepository() {
+        HttpSessionCsrfTokenRepository tokenRepository = new HttpSessionCsrfTokenRepository();
+        tokenRepository.setParameterName("_token");
+        return tokenRepository;
     }
 
     @Bean

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -23,9 +24,12 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringBootTest
 class OrderControllerTest {
@@ -73,6 +77,7 @@ class OrderControllerTest {
         ;
     }
 
+    @Test
     void testOrderPageWithAuthenticatedUser() throws Exception {
         mockMvc.perform(get("/order").with(user("LiLei")
                 .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"))))
@@ -95,5 +100,30 @@ class OrderControllerTest {
                 jdbcTemplate.queryForObject("select count(1) from persistent_logins", Integer.class));
         assertEquals("LiLei",
                 jdbcTemplate.queryForObject("select username from persistent_logins", String.class));
+    }
+
+    @Test
+    void testModifyOrdersToPaidWithCsrfFail() throws Exception {
+        mockMvc.perform(put("/order")
+                .param("id", "1").with(userLiLei()))
+                .andExpect(status().is4xxClientError());
+        mockMvc.perform(put("/order")
+                .param("id", "1").with(userLiLei())
+                .with(csrf().useInvalidToken()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testModifyOrdersToPaid() throws Exception {
+        mockMvc.perform(put("/order").param("id", "1")
+                .with(userLiLei()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("order"))
+                .andExpect(model().attribute("success_count", 1));
+    }
+
+    private SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userLiLei() {
+        return user("LiLei")
+                .authorities(AuthorityUtils.createAuthorityList("READ_ORDER", "ROLE_TEA_MAKER"));
     }
 }
