@@ -1,7 +1,10 @@
-drop table if exists t_menu;
-drop table if exists t_order;
 drop table if exists t_order_item;
+drop table if exists t_order;
 drop table if exists t_tea_maker;
+drop table if exists t_menu;
+drop table if exists users;
+drop table if exists authorities;
+drop table if exists persistent_logins;
 
 create table t_menu (
     id bigint not null auto_increment,
@@ -50,3 +53,10 @@ create table authorities (
 );
 
 create unique index ix_auth_username on authorities (username, authority);
+
+create table persistent_logins (
+    username varchar(64) not null,
+    series varchar(64) primary key,
+    token varchar(64) not null,
+    last_used timestamp not null
+);
