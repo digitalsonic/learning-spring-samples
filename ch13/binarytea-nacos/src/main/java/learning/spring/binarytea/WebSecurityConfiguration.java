@@ -38,9 +38,7 @@ import javax.sql.DataSource;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private PersistentTokenRepository tokenRepository;
+    private ObjectProvider<DataSource> dataSources;
 
     @Bean("/login")
     public UrlFilenameViewController loginController() {
@@ -61,7 +59,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PreAuthenticatedAuthenticationProvider jwtPreAuthenticatedAuthenticationProvider() {
         PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
         provider.setPreAuthenticatedUserDetailsService(
-                new UserDetailsByNameServiceWrapper<>(userDetailsService));
+                new UserDetailsByNameServiceWrapper<>(userDetailsService(dataSources)));
         return provider;
     }
 
@@ -83,42 +81,42 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultAuthenticationEntryPointFor(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
                         new MediaTypeRequestMatcher(MediaType.APPLICATION_JSON)).and()
                 .anonymous()
-                .key("binarytea_anonymous").and()
+                    .key("binarytea_anonymous").and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/token").permitAll()
-                .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**")
-                .access("isAnonymous() or hasAuthority('READ_MENU')")
-                .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
-                .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
-                .mvcMatchers(HttpMethod.POST, "/order").hasAuthority("WRITE_ORDER")
-                .anyRequest().authenticated().and()
+                    .antMatchers("/").permitAll()
+                    .mvcMatchers("/actuator/*").permitAll()
+                    .mvcMatchers(HttpMethod.POST, "/token").permitAll()
+                    .mvcMatchers(HttpMethod.GET, "/menu", "/menu/**").access("isAnonymous() or hasAuthority('READ_MENU')")
+                    .mvcMatchers(HttpMethod.POST, "/menu").hasAuthority("WRITE_MENU")
+                    .mvcMatchers(HttpMethod.GET, "/order").hasAuthority("READ_ORDER")
+                    .mvcMatchers(HttpMethod.POST, "/order").hasAuthority("WRITE_ORDER")
+                    .anyRequest().authenticated().and()
                 .formLogin() // 使用表单登录
-                .loginPage("/login").permitAll() // 设置登录页地址，全员可访问
-                .defaultSuccessUrl("/order")
-                .failureUrl("/login")
-                .loginProcessingUrl("/doLogin")
-                .usernameParameter("user")
-                .passwordParameter("pwd").and()
+                    .loginPage("/login").permitAll() // 设置登录页地址，全员可访问
+                    .defaultSuccessUrl("/order")
+                    .failureUrl("/login")
+                    .loginProcessingUrl("/doLogin")
+                    .usernameParameter("user")
+                    .passwordParameter("pwd").and()
                 .httpBasic().and() // 使用HTTP Basic认证
                 .rememberMe()
-                .key("binarytea")
-                .rememberMeParameter("remember")
-                .tokenValiditySeconds(24 * 60 * 60)
-                .tokenRepository(tokenRepository) // 配置持久化令牌
-                .userDetailsService(userDetailsService).and()
+                    .key("binarytea")
+                    .rememberMeParameter("remember")
+                    .tokenValiditySeconds(24 * 60 * 60)
+                    .tokenRepository(persistentTokenRepository(dataSources)) // 配置持久化令牌
+                    .userDetailsService(userDetailsService(dataSources)).and()
                 .logout()
-                .logoutSuccessUrl("/")
-                .logoutRequestMatcher(new OrRequestMatcher(
-                        new AntPathRequestMatcher("/logout", "GET"),
-                        new AntPathRequestMatcher("/logout", "POST")));
+                    .logoutSuccessUrl("/")
+                    .logoutRequestMatcher(new OrRequestMatcher(
+                            new AntPathRequestMatcher("/logout", "GET"),
+                            new AntPathRequestMatcher("/logout", "POST")));
     }
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository(ObjectProvider<DataSource> dataSources) {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSources.getIfAvailable());
-        tokenRepository.setCreateTableOnStartup(true);
+        tokenRepository.setCreateTableOnStartup(false);
         return tokenRepository;
     }
 
@@ -143,6 +141,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(jwtPreAuthenticatedAuthenticationProvider())
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService(dataSources));
     }
 }
