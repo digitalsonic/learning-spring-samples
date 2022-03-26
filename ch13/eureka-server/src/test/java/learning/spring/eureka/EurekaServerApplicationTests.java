@@ -1,4 +1,4 @@
-package learning.spring.eureka.eureka;
+package learning.spring.eureka;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
