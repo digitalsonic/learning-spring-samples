@@ -33,30 +33,41 @@
         </div>
         <h2>订单</h2>
         <div>
-            <table border="1px">
-                <thead>
-                    <tr>
-                        <th>订单编号</th>
-                        <th>总价</th>
-                        <th>实付</th>
-                        <th>状态</th>
-                        <th>内容</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="order : ${orders}">
-                        <td th:text="${order.id}">1</td>
-                        <td th:text="${order.amount.totalAmount}">CNY 12.0</td>
-                        <td th:text="${order.amount.payAmount}">CNY 12.0</td>
-                        <td th:text="${order.status}">ORDERED</td>
-                        <td>
-                            <div th:each="item : ${order.items}">
-                                <label th:text="${item.name}">Java咖啡</label>-<label th:text="${item.size}">MEDIUM</label><br/>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <form action="#" th:action="@{/order}" method="post">
+                <p th:if="${success_count != null}">更新了<span th:text="${success_count}">N</span>条记录</p>
+                <p>
+                    <table border="1px">
+                        <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>订单编号</th>
+                            <th>总价</th>
+                            <th>实付</th>
+                            <th>状态</th>
+                            <th>内容</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td><input name="id" type="checkbox" th:value="${order.id}" value="1"/></td>
+                            <td th:text="${order.id}">1</td>
+                            <td th:text="${order.amount.totalAmount}">CNY 12.0</td>
+                            <td th:text="${order.amount.payAmount}">CNY 12.0</td>
+                            <td th:text="${order.status}">ORDERED</td>
+                            <td>
+                                <div th:each="item : ${order.items}">
+                                    <label th:text="${item.name}">Java咖啡</label>-<label th:text="${item.size}">MEDIUM</label><br/>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </p>
+                <p>
+                    <input type="submit" value="已付款" />
+                    <input type="hidden" name="_method" value="put" />
+                </p>
+            </form>
         </div>
     </body>
 </html>

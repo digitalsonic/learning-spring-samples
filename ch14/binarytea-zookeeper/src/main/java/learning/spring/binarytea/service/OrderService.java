@@ -50,4 +50,11 @@ public class OrderService {
                 .build();
         return orderRepository.save(order);
     }
+
+    @RolesAllowed({ "MANAGER", "TEA_MAKER" })
+    public int modifyOrdersState(List<Long> idList, OrderStatus oldState, OrderStatus newState) {
+        List<Order> orders = orderRepository.findByStatusEqualsAndIdInOrderById(oldState, idList);
+        orders.forEach(o -> o.setStatus(newState));
+        return orderRepository.saveAll(orders).size();
+    }
 }
