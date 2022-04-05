@@ -4,9 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TeamakerApplication {
+public class TeaMakerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(TeamakerApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(TeaMakerApplication.class, args);
+	}
+
 }

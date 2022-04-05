@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,15 @@ public class LogHandlerInterceptor implements HandlerInterceptor {
         }
         details.setMethod(request.getMethod());
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) throws Exception {
+        LogDetails details = logDetails.get();
+        if (details != null) {
+            details.setProcessTime(System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -65,9 +75,10 @@ public class LogHandlerInterceptor implements HandlerInterceptor {
     }
 
     private void printLog(LogDetails details) {
-        log.info("{},{},{},{},{},{},{},{}ms",
+        log.info("{},{},{},{},{},{},{},{}ms,{}ms",
                 details.getRemoteAddr(), details.getMethod(), details.getUri(),
                 details.getHandler(), details.getCode(), details.getException(), details.getUser(),
-                details.getEndTime() - details.getStartTime()); // 总时间
+                details.getEndTime() - details.getStartTime(), // 总时间
+                details.getProcessTime() - details.getStartTime()); // 处理时间
     }
 }
