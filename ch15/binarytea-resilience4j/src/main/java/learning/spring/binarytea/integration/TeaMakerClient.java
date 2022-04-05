@@ -17,7 +17,7 @@ public class TeaMakerClient {
     @Value("${tea-maker.url}")
     private String teaMakerUrl;
 
-    @Bulkhead(name = "tea-maker")
+    @Bulkhead(name = "#root.args[0] % 2 + '-tea-maker'")
     public TeaMakerResult makeTea(Long id) {
         ResponseEntity<TeaMakerResult> entity =
                 restTemplate.postForEntity(teaMakerUrl + "/order/{id}", null,
