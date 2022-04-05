@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
+    @Autowired(required = false)
     private BinaryTeaProperties binaryTeaProperties;
 
     @Secured({ "ROLE_MANAGER", "ROLE_TEA_MAKER", "ROLE_USER" })
@@ -71,5 +71,12 @@ public class OrderService {
 
     public Optional<Order> queryOrder(Long id) {
         return orderRepository.findById(id);
+    }
+
+    @RolesAllowed({ "MANAGER", "TEA_MAKER" })
+    public int modifyOrdersState(List<Long> idList, OrderStatus oldState, OrderStatus newState) {
+        List<Order> orders = orderRepository.findByStatusEqualsAndIdInOrderById(oldState, idList);
+        orders.forEach(o -> o.setStatus(newState));
+        return orderRepository.saveAll(orders).size();
     }
 }
