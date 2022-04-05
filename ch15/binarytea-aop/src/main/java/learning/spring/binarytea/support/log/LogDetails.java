@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class LogDetails {
     private long startTime; // 开始处理的时间
+    private long processTime; // 处理的结束时间
     private long endTime; // 完成视图呈现的时间
     private int code; // 返回的HTTP响应码
     private String handler; // 具体的处理器
