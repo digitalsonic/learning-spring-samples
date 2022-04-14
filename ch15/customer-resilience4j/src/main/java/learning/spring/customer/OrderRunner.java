@@ -50,7 +50,7 @@ public class OrderRunner implements ApplicationRunner {
     }
 
     private void modifyOrderState(Long id, String state) {
-        log.info("开始支付订单：{}", id);
+        log.info("订单{}改为{}状态", id, state);
         StatusForm sf = StatusForm.builder().id(id).status(state).build();
         ResponseEntity<learning.spring.customer.model.Order> response =
                 orderService.modifyOrderStatus(sf);
