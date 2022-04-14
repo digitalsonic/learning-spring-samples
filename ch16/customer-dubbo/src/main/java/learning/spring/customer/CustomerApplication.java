@@ -2,14 +2,11 @@ package learning.spring.customer;
 
 import com.fasterxml.jackson.datatype.jodamoney.JodaMoneyModule;
 import learning.spring.customer.integration.BinaryTeaClient;
-import learning.spring.customer.support.CircuitBreakerAspect;
 import learning.spring.customer.support.JwtClientHttpRequestInitializer;
 import learning.spring.customer.support.JwtClientHttpRequestInterceptor;
-import learning.spring.customer.support.RetryAspect;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.protocol.HTTP;
