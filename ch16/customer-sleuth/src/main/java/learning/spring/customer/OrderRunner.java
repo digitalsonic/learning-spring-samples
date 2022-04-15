@@ -33,8 +33,9 @@ public class OrderRunner implements ApplicationRunner {
         List<learning.spring.customer.model.Order> orders = orderService.listOrders();
         log.info("调用前的订单数量: {}", orders.size());
         Long id = createOrder();
-        payOrder(id);
+        modifyOrderState(id, "PAID");
         waitUntilFinished(id);
+        modifyOrderState(id, "TAKEN");
     }
 
     private Long createOrder() {
@@ -48,11 +49,9 @@ public class OrderRunner implements ApplicationRunner {
         return response.getBody().getId();
     }
 
-    private void payOrder(Long id) {
-        log.info("开始支付订单：{}", id);
-        StatusForm sf = StatusForm.builder()
-                .id(id)
-                .status("PAID").build();
+    private void modifyOrderState(Long id, String state) {
+        log.info("订单{}改为{}状态", id, state);
+        StatusForm sf = StatusForm.builder().id(id).status(state).build();
         ResponseEntity<learning.spring.customer.model.Order> response =
                 orderService.modifyOrderStatus(sf);
         log.info("HTTP Status: {}, Headers: {}", response.getStatusCode(), response.getHeaders());
@@ -78,5 +77,9 @@ public class OrderRunner implements ApplicationRunner {
             }
         }
         log.info("订单{}已经好了", id);
+    }
+
+    private void takeOrder(Long id) {
+
     }
 }

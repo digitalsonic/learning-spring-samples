@@ -21,7 +21,7 @@ public class BinaryteaClient {
 
     @RabbitListener(queues = "notify.order.paid")
     @ContinueSpan
-    public void processOrder(@SpanTag(key = "msg", expression = "#{message}") OrderMessage message) {
+    public void processOrder(@SpanTag("msg") OrderMessage message) {
         Long id = message.getOrderId();
         log.info("开始制作订单{}", id);
         ProcessResult result = orderService.make(id);

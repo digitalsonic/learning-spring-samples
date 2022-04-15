@@ -7,14 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class TeamakerApplication {
+public class TeaMakerApplication {
 
-    @Bean
-    public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper jsonObjectMapper) {
-        return new Jackson2JsonMessageConverter(jsonObjectMapper);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(TeaMakerApplication.class, args);
+	}
 
-    public static void main(String[] args) {
-        SpringApplication.run(TeamakerApplication.class, args);
-    }
+	@Bean
+	public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper jsonObjectMapper) {
+		return new Jackson2JsonMessageConverter(jsonObjectMapper);
+	}
 }
