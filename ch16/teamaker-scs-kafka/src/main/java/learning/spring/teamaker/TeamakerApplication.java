@@ -9,13 +9,14 @@ import org.springframework.context.annotation.Bean;
 import java.util.function.Function;
 
 @SpringBootApplication
-public class TeamakerApplication {
-    @Bean
-    public Function<OrderMessage, OrderMessage> notifyOrderPaid(BinaryteaClient client) {
-        return message -> client.processOrder(message);
-    }
+public class TeaMakerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(TeamakerApplication.class, args);
-    }
+	@Bean
+	public Function<OrderMessage, OrderMessage> notifyOrderPaid(BinaryteaClient client) {
+		return message -> client.processOrder(message);
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(TeaMakerApplication.class, args);
+	}
 }
