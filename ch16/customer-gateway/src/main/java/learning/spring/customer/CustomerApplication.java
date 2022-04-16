@@ -2,10 +2,8 @@ package learning.spring.customer;
 
 import com.fasterxml.jackson.datatype.jodamoney.JodaMoneyModule;
 import learning.spring.customer.integration.BinaryTeaClient;
-import learning.spring.customer.support.CircuitBreakerAspect;
 import learning.spring.customer.support.JwtClientHttpRequestInitializer;
 import learning.spring.customer.support.JwtClientHttpRequestInterceptor;
-import learning.spring.customer.support.RetryAspect;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
