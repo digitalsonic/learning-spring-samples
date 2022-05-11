@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.security.RolesAllowed;
-import javax.transaction.Transactional;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.transaction.Transactional;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;

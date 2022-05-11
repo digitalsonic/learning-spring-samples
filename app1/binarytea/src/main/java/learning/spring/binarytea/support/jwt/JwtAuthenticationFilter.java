@@ -2,12 +2,12 @@ package learning.spring.binarytea.support.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
-import javax.servlet.http.HttpServletRequest;
 
 public class JwtAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
     @Autowired

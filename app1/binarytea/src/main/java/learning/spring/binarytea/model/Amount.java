@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.joda.money.Money;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 @Builder
 @Data

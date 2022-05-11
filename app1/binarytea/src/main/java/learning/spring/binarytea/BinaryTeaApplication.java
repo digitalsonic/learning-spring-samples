@@ -1,6 +1,6 @@
 package learning.spring.binarytea;
 
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.hibernate5.jakarta.Hibernate5JakartaModule;
 import com.fasterxml.jackson.datatype.jodamoney.JodaMoneyModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +22,8 @@ public class BinaryTeaApplication {
     }
 
     @Bean
-    public Hibernate5Module hibernate5Module() {
-        return new Hibernate5Module();
+    public Hibernate5JakartaModule hibernate5Module() {
+        return new Hibernate5JakartaModule();
     }
 
     @Bean

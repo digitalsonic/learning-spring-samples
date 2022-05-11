@@ -14,7 +14,7 @@ import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Slf4j
 public class JwtClientHttpRequestInitializer implements RestTemplateRequestCustomizer {
