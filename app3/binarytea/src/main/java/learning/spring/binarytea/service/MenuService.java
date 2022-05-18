@@ -49,7 +49,7 @@ public class MenuService {
         return menuRepository.findAllById(idList);
     }
 
-    @Cacheable(key = "#root.methodName + '-' + #name + '-' + #size")
+//    @Cacheable(key = "#root.methodName + '-' + #name + '-' + #size")
     public Optional<MenuItem> getByNameAndSize(String name, Size size) {
         return menuRepository.findByNameAndSize(name, size);
     }

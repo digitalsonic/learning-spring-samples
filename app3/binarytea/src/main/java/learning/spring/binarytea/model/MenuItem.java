@@ -41,8 +41,7 @@ public class MenuItem implements Serializable {
     @Enumerated(EnumType.STRING)
     private Size size;
 
-    @Type(type = "org.jadira.usertype.moneyandcurrency.joda.PersistentMoneyMinorAmount",
-            parameters = {@org.hibernate.annotations.Parameter(name = "currencyCode", value = "CNY")})
+    @Type(type = "learning.spring.binarytea.support.MoneyType")
     private Money price;
 
     @Column(updatable = false)

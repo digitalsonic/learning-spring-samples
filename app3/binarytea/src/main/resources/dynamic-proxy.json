@@ -1,0 +1,5 @@
+[
+  { "interfaces": [ "org.springframework.web.bind.annotation.PostMapping", "org.springframework.core.annotation.SynthesizedAnnotation" ] },
+  { "interfaces": [ "org.springframework.web.bind.annotation.GetMapping", "org.springframework.core.annotation.SynthesizedAnnotation" ] },
+  { "interfaces": [ "org.springframework.boot.autoconfigure.web.servlet.ConditionalOnMissingFilterBean", "org.springframework.core.annotation.SynthesizedAnnotation" ] }
+]

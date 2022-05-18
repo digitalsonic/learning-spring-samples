@@ -20,12 +20,10 @@ public class Amount {
     private int discount;
 
     @Column(name = "amount_total")
-    @Type(type = "org.jadira.usertype.moneyandcurrency.joda.PersistentMoneyMinorAmount",
-            parameters = {@org.hibernate.annotations.Parameter(name = "currencyCode", value = "CNY")})
+    @Type(type = "learning.spring.binarytea.support.MoneyType")
     private Money totalAmount;
 
     @Column(name = "amount_pay")
-    @Type(type = "org.jadira.usertype.moneyandcurrency.joda.PersistentMoneyMinorAmount",
-            parameters = {@org.hibernate.annotations.Parameter(name = "currencyCode", value = "CNY")})
+    @Type(type = "learning.spring.binarytea.support.MoneyType")
     private Money payAmount;
 }

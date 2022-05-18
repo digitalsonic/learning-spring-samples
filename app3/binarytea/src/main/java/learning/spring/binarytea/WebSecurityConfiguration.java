@@ -1,8 +1,7 @@
 package learning.spring.binarytea;
 
-import learning.spring.binarytea.support.RoleBasedJdbcUserDetailsManager;
 import learning.spring.binarytea.support.jwt.JwtAuthenticationFilter;
-import org.springframework.beans.factory.ObjectProvider;
+import learning.spring.binarytea.support.jwt.JwtTokenHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,51 +15,35 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.web.servlet.mvc.UrlFilenameViewController;
-
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
-    private ObjectProvider<DataSource> dataSources;
-
-    @Bean("/login")
-    public UrlFilenameViewController loginController() {
-        UrlFilenameViewController controller = new UrlFilenameViewController();
-        controller.setSupportedMethods(HttpMethod.GET.name());
-        controller.setSuffix(".html");
-        return controller;
-    }
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+    @Autowired
+    private PreAuthenticatedAuthenticationProvider jwtPreAuthenticatedAuthenticationProvider;
+    @Autowired
+    private JwtTokenHelper jwtTokenHelper;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter();
+        filter.setJwtTokenHelper(jwtTokenHelper);
         filter.setAuthenticationManager(authenticationManagerBean());
         return filter;
-    }
-
-    @Bean
-    public PreAuthenticatedAuthenticationProvider jwtPreAuthenticatedAuthenticationProvider() {
-        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-        provider.setPreAuthenticatedUserDetailsService(
-                new UserDetailsByNameServiceWrapper<>(userDetailsService(dataSources)));
-        return provider;
     }
 
     @Bean("authenticationManager")
@@ -104,34 +87,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .key("binarytea")
                     .rememberMeParameter("remember")
                     .tokenValiditySeconds(24 * 60 * 60)
-                    .tokenRepository(persistentTokenRepository(dataSources)) // 配置持久化令牌
-                    .userDetailsService(userDetailsService(dataSources)).and()
+                    .tokenRepository(persistentTokenRepository) // 配置持久化令牌
+                    .userDetailsService(userDetailsService).and()
                 .logout()
                     .logoutSuccessUrl("/")
                     .logoutRequestMatcher(new OrRequestMatcher(
                         new AntPathRequestMatcher("/logout", "GET"),
                         new AntPathRequestMatcher("/logout", "POST")));
-    }
-
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository(ObjectProvider<DataSource> dataSources) {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSources.getIfAvailable());
-        tokenRepository.setCreateTableOnStartup(false);
-        return tokenRepository;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(ObjectProvider<DataSource> dataSources) {
-        RoleBasedJdbcUserDetailsManager userDetailsManager = new RoleBasedJdbcUserDetailsManager();
-        userDetailsManager.setDataSource(dataSources.getIfAvailable());
-        UserDetails manager = User.builder()
-                .username("HanMeimei")
-                .password("{bcrypt}$2a$10$iAty2GrJu9WfpksIen6qX.vczLmXlp.1q1OHBxWEX8BIldtwxHl3u")
-                .roles("MANAGER")
-                .build();
-        userDetailsManager.createUser(manager);
-        return userDetailsManager;
     }
 
     @Override
@@ -141,7 +103,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(jwtPreAuthenticatedAuthenticationProvider())
-                .userDetailsService(userDetailsService(dataSources));
+        auth.authenticationProvider(jwtPreAuthenticatedAuthenticationProvider)
+                .userDetailsService(userDetailsService);
     }
 }

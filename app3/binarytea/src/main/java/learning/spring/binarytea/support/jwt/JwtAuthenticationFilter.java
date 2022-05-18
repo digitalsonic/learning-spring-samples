@@ -2,6 +2,7 @@ package learning.spring.binarytea.support.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 
 import javax.servlet.http.HttpServletRequest;
 
+@Setter
 public class JwtAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
     @Autowired
     private JwtTokenHelper jwtTokenHelper;
